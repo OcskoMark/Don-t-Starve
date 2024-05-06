@@ -76,7 +76,7 @@ namespace Don_t_Starve.Menus
 
 			const double easyDificultyModifier = 0.75;
 			const double normalDifficultyModifier = 1.0;
-			const double hardDifficultyModifier = 1.0;
+			const double hardDifficultyModifier = 1.25;
 
 			while (true)
 			{

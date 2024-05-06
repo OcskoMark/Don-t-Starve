@@ -27,10 +27,6 @@ namespace Don_t_Starve
 			Water, Bough, Tree, Stone, Grass, Flower, Herb, Carrot, Berry
 		};
 
-		//These are the constants for the equipments' names.
-		public const string Axe = "Axe";
-		public const string PickAxe = "Pickaxe";
-
 		//These are the messages for user.
 		public const string WrongInputMessage = "Wrong input!" + "\n" + "Please, type a valid input!" + "\n";
 	}

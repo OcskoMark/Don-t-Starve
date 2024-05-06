@@ -16,6 +16,9 @@ namespace Don_t_Starve.Entities
 		private int _actionPoints;
 		private bool _dayTime;
 		private string _name;
+		private Axe _axe;
+		private PickAxe _pickAxe;
+		private FlowerWreath _flowerWreath;
 
 		public Player(string name)
 		{
@@ -29,6 +32,19 @@ namespace Don_t_Starve.Entities
 			}
 			_actionPoints = 75;
 			_dayTime = true;
+			_axe = null;
+			_pickAxe = null;
+			_flowerWreath = null;
 		}
+
+		public double Hp { get => _hp; }
+		public double Brain { get => _brain; }
+		public double Hunger { get => _hunger; }
+		public int ActionPoints { get => _actionPoints; }
+		public bool DayTime { get => _dayTime; }
+		public string Name { get => _name; }
+		internal Axe Axe { get => _axe; }
+		internal PickAxe PickAxe { get => _pickAxe; }
+		internal FlowerWreath FlowerWreath { get => _flowerWreath;  }
 	}
 }

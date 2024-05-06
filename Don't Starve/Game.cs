@@ -33,12 +33,14 @@ namespace Don_t_Starve
 
 		public static int DividedByDifficultyModifier(int value)
 		{
-			return Convert.ToInt32(Math.Round(value / _difficultyModifier));
+			int roundedResult = Convert.ToInt32(Math.Round(value / _difficultyModifier, MidpointRounding.AwayFromZero));
+			return roundedResult > 0 ? roundedResult: 1;
 		}
 
 		public static int MultipliedByDifficultyModifier(int value)
 		{
-			return Convert.ToInt32(Math.Round(value * _difficultyModifier));
+			int roundedResult = Convert.ToInt32(Math.Round(value * _difficultyModifier, MidpointRounding.AwayFromZero));
+			return roundedResult > 0 ? roundedResult : 1;
 		}
 	}
 }

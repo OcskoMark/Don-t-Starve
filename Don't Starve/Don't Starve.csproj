@@ -44,8 +44,10 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="Equipments\Axe.cs" />
+    <Compile Include="Equipments\FireCamp.cs" />
+    <Compile Include="Equipments\FlowerWreath.cs" />
     <Compile Include="Equipments\PickAxe.cs" />
-    <Compile Include="Equipments\Tool.cs" />
+    <Compile Include="Equipments\Equipment.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Map\Bough.cs" />
     <Compile Include="Map\Field.cs" />

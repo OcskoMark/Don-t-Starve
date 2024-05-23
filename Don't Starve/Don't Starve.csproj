@@ -43,16 +43,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="Exceptions\WrongActionException.cs" />
+    <Compile Include="Exceptions\YouAreDeadException.cs" />
     <Compile Include="Equipments\Axe.cs" />
-    <Compile Include="Equipments\FireCamp.cs" />
+    <Compile Include="Equipments\Campfire.cs" />
     <Compile Include="Equipments\FlowerWreath.cs" />
-    <Compile Include="Equipments\PickAxe.cs" />
+    <Compile Include="Equipments\Pickaxe.cs" />
     <Compile Include="Equipments\Equipment.cs" />
-    <Compile Include="Game.cs" />
+    <Compile Include="GameEngine\Game.cs" />
+    <Compile Include="GameEngine\GameCoefficients.cs" />
     <Compile Include="Map\Bough.cs" />
     <Compile Include="Map\Field.cs" />
     <Compile Include="Entities\Player.cs" />
     <Compile Include="Map\Land.cs" />
+    <Compile Include="Map\OceanWater.cs" />
+    <Compile Include="Map\Position.cs" />
     <Compile Include="Menus\MainMenuSingleton.cs" />
     <Compile Include="Map\Water.cs" />
     <Compile Include="Menus\NewGameMenuSingleton.cs" />

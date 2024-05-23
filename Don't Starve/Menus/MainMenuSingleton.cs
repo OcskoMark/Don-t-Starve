@@ -44,6 +44,7 @@ namespace Don_t_Starve.Menus
 						validInput = true;
 						Console.WriteLine();
 						Console.WriteLine("Goodbye!");
+						Console.WriteLine();
 						Console.WriteLine("(Press any key to exit...)");
 						Console.ReadKey();
 						Environment.Exit(0);

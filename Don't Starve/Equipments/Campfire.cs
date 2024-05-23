@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Don_t_Starve.Map;
+using Don_t_Starve.GameEngine;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Don_t_Starve.Entities;
 
 namespace Don_t_Starve.Equipments
 {
@@ -10,13 +13,23 @@ namespace Don_t_Starve.Equipments
 	{
 		private static Dictionary<string, int> _rawMaterials = new Dictionary<string, int>()
 		{
-			[Constants.Tree] = Game.MultipliedByDifficultyModifier(2),
-			[Constants.Stone] = Game.MultipliedByDifficultyModifier(4),
-			[Constants.Grass] = Game.MultipliedByDifficultyModifier(2)
+			[Constants.Tree] = GameCoefficients.MultipliedByDifficultyModifier(2),
+			[Constants.Stone] = GameCoefficients.MultipliedByDifficultyModifier(4),
+			[Constants.Grass] = GameCoefficients.MultipliedByDifficultyModifier(2)
 		};
+		private Position _position;
 
-		public Campfire() : base(Game.DividedByDifficultyModifier(1), "Campfire") { }
+		public Campfire(Position pos) : base(GameCoefficients.DividedByDifficultyModifier(1), Constants.Campfire)
+		{
+			_position = pos;
+		}
 
-		public new static Dictionary<string, int> RawMaterials { get => _rawMaterials; }
+		public static Dictionary<string, int> RawMaterials { get => _rawMaterials; }
+		public Position Position { get => _position; }
+
+		public static void Create(Player player)
+		{
+			player.CreateEquipment(_rawMaterials, 2, Constants.Campfire);
+		}
 	}
 }

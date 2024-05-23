@@ -13,6 +13,7 @@ namespace Don_t_Starve
 		{
 			MainMenuSingleton mainMenu = MainMenuSingleton.GetInstance();
 			mainMenu.ChooseMainMenuOptions();
+			Console.WriteLine();
 			Console.WriteLine("Press any key to quit...");
 			Console.ReadKey();
 		}

@@ -1,8 +1,11 @@
 ﻿using System;
+using Don_t_Starve.GameEngine;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Don_t_Starve.Exceptions;
+using Don_t_Starve.Entities;
 
 namespace Don_t_Starve.Equipments
 {
@@ -16,7 +19,6 @@ namespace Don_t_Starve.Equipments
 			_live = live;
 			_name = name;
 		}
-
 		public int Live { get => _live; }
 		public string Name { get => _name; }
 
@@ -30,17 +32,10 @@ namespace Don_t_Starve.Equipments
 			if (IsUsable())
 			{
 				_live--;
-			} else
-			{
-				throw new InvalidOperationException("This " + _name + " tool is not usable anymore!");
 			}
-		}
-
-		public static Dictionary<string, int> RawMaterials
-		{
-			get
+			else
 			{
-				throw new NotImplementedException();
+				throw new WrongActionException("This " + _name + " is not usable anymore!");
 			}
 		}
 	}

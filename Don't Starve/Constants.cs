@@ -27,6 +27,18 @@ namespace Don_t_Starve
 			Water, Bough, Tree, Stone, Grass, Flower, Herb, Carrot, Berry
 		};
 
+		//These are the names of equipments.
+		public const string Axe = "Axe";
+		public const string Pickaxe = "Pickaxe";
+		public const string Campfire = "Campfire";
+		public const string FlowerWreath = "Flower wreath";
+
+		//directions
+		public const string Left = "left";
+		public const string Right = "right";
+		public const string Up = "up";
+		public const string Down = "down";
+
 		//These are the messages for user.
 		public const string WrongInputMessage = "Wrong input!" + "\n" + "Please, type a valid input!" + "\n";
 	}

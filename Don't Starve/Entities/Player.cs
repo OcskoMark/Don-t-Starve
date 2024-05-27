@@ -21,14 +21,13 @@ namespace Don_t_Starve.Entities
 		private int _actionPoints;
 		private bool _daytime;
 		private string _name;
-		private Axe _axe;
-		private Pickaxe _pickaxe;
+		private Dictionary<string, Equipment> _tools = new Dictionary<string, Equipment>();
 		private FlowerWreath _flowerWreath;
 		private List<Campfire> _campfires;
 		private Position _position;
-		private GameCoefficients _gameCoefficients;
+		private PlayerGameCoefficients _playerGameCoefficients;
 
-		public Player(string name, int minCoord, int maxCoord, GameCoefficients gameCoefficients)
+		public Player(string name, int minCoord, int maxCoord, PlayerGameCoefficients playerGameCoefficients)
 		{
 			Random random = new Random();
 
@@ -37,20 +36,20 @@ namespace Don_t_Starve.Entities
 			_brain = 100.0;
 			_hunger = 100.0;
 			_thirst = 100.0;
-			_maxInventory = GameCoefficients.DividedByDifficultyModifier(40);
+			_maxInventory = GameCoefficientsCalculatorSingleton.DividedByDifficultyModifier(40);
 			foreach (string collectible in Constants.collectibles)
 			{
 				_resources[collectible] = 0;
 			}
 			_actionPoints = 75;
 			_daytime = true;
-			_axe = null;
-			_pickaxe = null;
+			_tools[Constants.Axe] = null;
+			_tools[Constants.Pickaxe] = null;
 			_flowerWreath = null;
 			_campfires = new List<Campfire>();
 			_position = new Position(random.Next(minCoord, maxCoord), random.Next(minCoord, maxCoord));
 
-			_gameCoefficients = gameCoefficients;
+			_playerGameCoefficients = playerGameCoefficients;
 			
 		}
 
@@ -77,10 +76,9 @@ namespace Don_t_Starve.Entities
 		public bool Daytime { get => _daytime; }
 		public string Name { get => _name; }
 		public Dictionary<string, int> Resources { get => _resources; }
-		public Axe Axe { get => _axe; }
-		public Pickaxe PickAxe { get => _pickaxe; }
 		public FlowerWreath FlowerWreath { get => _flowerWreath;  }
-		internal List<Campfire> Campfires { get => _campfires; set => _campfires = value; }
+		internal List<Campfire> Campfires { get => _campfires; }
+		internal Dictionary<string, Equipment> Tools { get => _tools; }
 
 		private void CheckLiveProperty (ref double property, double value, [System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
 		{
@@ -98,7 +96,7 @@ namespace Don_t_Starve.Entities
 			}
 		}
 
-		private void UseEquipment<T>(ref T equipment) where T : Equipment
+		private T UseEquipment<T>(T equipment) where T : Equipment
 		{
 			if (equipment != null)
 			{
@@ -107,7 +105,7 @@ namespace Don_t_Starve.Entities
 					equipment.Use();
 					if (!equipment.IsUsable())
 					{
-						equipment = null;
+						return null;
 					}
 				}
 				else
@@ -117,9 +115,10 @@ namespace Don_t_Starve.Entities
 			}
 			else
 			{
-				throw new WrongActionException("This equipment does not exist!");
+				throw new WrongActionException("You have not the necessary equipment!");
 			}
-			
+
+			return equipment;
 		}
 
 		private void ChangePartOfTheDay()
@@ -136,12 +135,12 @@ namespace Don_t_Starve.Entities
 				
 				if (_campfires.Count > 0)
 				{
-					for (int i = 0; i < Campfires.Count; i++)
+					for (int i = 0; i < _campfires.Count; i++)
 					{
-						Campfires.ElementAt(i).Use();
-						if (!(Campfires.ElementAt(i).IsUsable()))
+						Campfire campfire = UseEquipment(_campfires.ElementAt(i));
+						if (campfire == null)
 						{
-							Campfires.RemoveAt(i);
+							_campfires.RemoveAt(i);
 							i--;
 						}
 					}
@@ -149,7 +148,7 @@ namespace Don_t_Starve.Entities
 
 				if (_flowerWreath != null)
 				{
-					UseEquipment(ref _flowerWreath);
+					_flowerWreath = UseEquipment(_flowerWreath);
 				}
 			}
 		}
@@ -160,7 +159,7 @@ namespace Don_t_Starve.Entities
 			{
 				foreach (Campfire campfire in _campfires)
 				{
-					if (_gameCoefficients.MaxSafetyDistanceFromCampfire >= _position.GetDistance(campfire.Position))
+					if (_playerGameCoefficients.MaxSafetyDistanceFromCampfire >= _position.GetDistance(campfire.Position))
 					{
 						return true;
 					}
@@ -170,56 +169,46 @@ namespace Don_t_Starve.Entities
 			return false;
 		}
 
-		private void DoAction(int spentActionPoints)
+		private void SpendActionPoints(int spentActionPoints)
 		{
 			if (_actionPoints >= spentActionPoints)
 			{
 				ActionPoints -= spentActionPoints;
-				Hunger -= _gameCoefficients.HungerLossByAction * spentActionPoints;
+				Hunger -= _playerGameCoefficients.HungerLossByAction * spentActionPoints;
 				if (!_daytime)
 				{
-					Thirst -= _gameCoefficients.ThirstLossByActionAtNight;
+					Thirst -= _playerGameCoefficients.ThirstLossByActionAtNight;
 					if (IsExistNearlyCampfire())
 					{
 						Brain -= (_flowerWreath != null) ?
-							((_gameCoefficients.BrainLossNight - _gameCoefficients.BrainGainWithFlowerWreath) * spentActionPoints) :
-							(_gameCoefficients.BrainLossNight * spentActionPoints);
+							((_playerGameCoefficients.BrainLossNight - _playerGameCoefficients.BrainGainWithFlowerWreath) * spentActionPoints) :
+							(_playerGameCoefficients.BrainLossNight * spentActionPoints);
 					}
 					else
 					{
-						Brain -= _gameCoefficients.BrainLossNightWithoutCampfire;
-						Hp -= _gameCoefficients.HpLossAtNightWithoutCampfire;
+						Brain -= _playerGameCoefficients.BrainLossNightWithoutCampfire;
+						Hp -= _playerGameCoefficients.HpLossAtNightWithoutCampfire;
 					}
 					
 				}
 				else
 				{
-					Thirst -= _gameCoefficients.ThirstLossByActionAtDaytime;
+					Thirst -= _playerGameCoefficients.ThirstLossByActionAtDaytime;
 				}
 			}
 			else
 			{
 				int remainedActionPoints = spentActionPoints - _actionPoints;
-				DoAction(_actionPoints);
-				DoAction(remainedActionPoints);
+				SpendActionPoints(_actionPoints);
+				SpendActionPoints(remainedActionPoints);
 			}
 		}
 
-		public void CollectResource(string resourceType, int spentActionPoints, string equipmentName = "")
+		private bool IsFreeInventorySpaceForResource(string resourceType)
 		{
 			if (_resources[resourceType] < _maxInventory)
 			{
-				switch(equipmentName)
-				{
-					case Constants.Axe:
-						UseEquipment(ref _axe);
-						break;
-					case Constants.Pickaxe:
-						UseEquipment(ref _pickaxe);
-						break;
-				}
-				_resources[resourceType]++;
-				DoAction(spentActionPoints);
+				return true;
 			}
 			else
 			{
@@ -227,9 +216,27 @@ namespace Don_t_Starve.Entities
 			}
 		}
 
+		public void CollectResource(string resourceType, int actionPoints)
+		{
+			if (IsFreeInventorySpaceForResource(resourceType))
+			{
+				_resources[resourceType]++;
+				SpendActionPoints(actionPoints);
+			}
+		}
+
+		public void CollectResource(string resourceType, int actionPoints, string toolName)
+		{
+			if (IsFreeInventorySpaceForResource(resourceType))
+			{
+				_tools[toolName] = UseEquipment(_tools[toolName]);
+				CollectResource(resourceType, actionPoints);
+			}
+		}
+
 		public void Wait()
 		{
-			DoAction(1);
+			SpendActionPoints(1);
 		}
 
 		public void CreateEquipment(Dictionary<string, int> rawMaterials, int spentActionPoints, string equipmentName)
@@ -242,7 +249,7 @@ namespace Don_t_Starve.Entities
 				}
 			}
 
-			DoAction(spentActionPoints);
+			SpendActionPoints(spentActionPoints);
 			foreach (string material in rawMaterials.Keys)
 			{
 				_resources[material] -= rawMaterials[material];
@@ -251,10 +258,10 @@ namespace Don_t_Starve.Entities
 			switch (equipmentName)
 			{
 				case Constants.Axe:
-					_axe = new Axe();
+					_tools[Constants.Axe] = new Axe();
 					break;
 				case Constants.Pickaxe:
-					_pickaxe = new Pickaxe();
+					_tools[Constants.Pickaxe] = new Pickaxe();
 					break;
 				case Constants.FlowerWreath:
 					_flowerWreath = new FlowerWreath();
@@ -264,6 +271,53 @@ namespace Don_t_Starve.Entities
 					break;
 				default:
 					throw new Exception("Unknown equipment!");
+			}
+		}
+
+		private void CheckDestinationWalkableAndUpdatePosition(Position newPosition, Field[][] map)
+		{
+			bool destinationIsReachable = false;
+
+			for (int x = newPosition.XPosition - 1; x <= newPosition.XPosition + 1; x++)
+			{
+				for (int y = newPosition.YPosition - 1; y <= newPosition.YPosition; y++)
+				{
+					if (map[x][y].isWalkable())
+					{
+						destinationIsReachable = true;
+					}
+				}
+			}
+
+			if (destinationIsReachable)
+			{
+				_position = newPosition;
+				SpendActionPoints(1);
+			}
+			else
+			{
+				throw new WrongActionException("The destination is impassable!");
+			}
+		}
+
+		public void Move(string direction, Field[][] map)
+		{
+			switch (direction)
+			{
+				case Constants.Left:
+					CheckDestinationWalkableAndUpdatePosition(new Position(_position.XPosition - 1, _position.YPosition), map);
+					break;
+				case Constants.Right:
+					CheckDestinationWalkableAndUpdatePosition(new Position(_position.XPosition + 1, _position.YPosition), map);
+					break;
+				case Constants.Up:
+					CheckDestinationWalkableAndUpdatePosition(new Position(_position.XPosition, _position.YPosition - 1), map);
+					break;
+				case Constants.Down:
+					CheckDestinationWalkableAndUpdatePosition(new Position(_position.XPosition, _position.YPosition + 1), map);
+					break;
+				default:
+					throw new Exception("Unknown direction!");
 			}
 		}
 	}

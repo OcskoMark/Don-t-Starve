@@ -20,8 +20,6 @@ namespace Don_t_Starve
 		public const string Herb = "herb";
 		public const string Carrot = "carrot";
 		public const string Berry = "berry";
-		public const int MaxCollectibleSmallAmount = 5;
-		public const int MaxCollectibleLargeAmount = 10;
 		public static readonly List<string> collectibles = new List<string>
 		{
 			Water, Bough, Tree, Stone, Grass, Flower, Herb, Carrot, Berry

@@ -12,10 +12,10 @@ namespace Don_t_Starve.Equipments
 	{
 		private static Dictionary<string, int> _rawMaterials = new Dictionary<string, int>()
 		{
-			[Constants.Flower] = GameCoefficients.MultipliedByDifficultyModifier(10)
+			[Constants.Flower] = GameCoefficientsCalculatorSingleton.MultipliedByDifficultyModifier(10)
 		};
 
-		public FlowerWreath() : base(GameCoefficients.DividedByDifficultyModifier(15), Constants.FlowerWreath) { }
+		public FlowerWreath() : base(GameCoefficientsCalculatorSingleton.DividedByDifficultyModifier(15), Constants.FlowerWreath) { }
 
 		public static Dictionary<string, int> RawMaterials { get => _rawMaterials; }
 

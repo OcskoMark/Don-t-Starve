@@ -13,13 +13,13 @@ namespace Don_t_Starve.Equipments
 	{
 		private static Dictionary<string, int> _rawMaterials = new Dictionary<string, int>()
 		{
-			[Constants.Tree] = GameCoefficients.MultipliedByDifficultyModifier(2),
-			[Constants.Stone] = GameCoefficients.MultipliedByDifficultyModifier(4),
-			[Constants.Grass] = GameCoefficients.MultipliedByDifficultyModifier(2)
+			[Constants.Tree] = GameCoefficientsCalculatorSingleton.MultipliedByDifficultyModifier(2),
+			[Constants.Stone] = GameCoefficientsCalculatorSingleton.MultipliedByDifficultyModifier(4),
+			[Constants.Grass] = GameCoefficientsCalculatorSingleton.MultipliedByDifficultyModifier(2)
 		};
 		private Position _position;
 
-		public Campfire(Position pos) : base(GameCoefficients.DividedByDifficultyModifier(1), Constants.Campfire)
+		public Campfire(Position pos) : base(GameCoefficientsCalculatorSingleton.DividedByDifficultyModifier(1), Constants.Campfire)
 		{
 			_position = pos;
 		}

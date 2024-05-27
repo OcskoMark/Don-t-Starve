@@ -12,11 +12,11 @@ namespace Don_t_Starve.Equipments
 	{
 		private static Dictionary<string, int> _rawMaterials = new Dictionary<string, int>()
 		{
-			[Constants.Tree] = GameCoefficients.MultipliedByDifficultyModifier(2),
-			[Constants.Grass] = GameCoefficients.MultipliedByDifficultyModifier(2)
+			[Constants.Tree] = GameCoefficientsCalculatorSingleton.MultipliedByDifficultyModifier(2),
+			[Constants.Grass] = GameCoefficientsCalculatorSingleton.MultipliedByDifficultyModifier(2)
 		};
 
-		public Pickaxe() : base(GameCoefficients.DividedByDifficultyModifier(7), Constants.Pickaxe) { }
+		public Pickaxe() : base(GameCoefficientsCalculatorSingleton.DividedByDifficultyModifier(7), Constants.Pickaxe) { }
 
 		public static Dictionary<string, int> RawMaterials { get => _rawMaterials; }
 

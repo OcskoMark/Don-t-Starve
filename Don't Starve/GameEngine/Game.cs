@@ -13,6 +13,7 @@ namespace Don_t_Starve.GameEngine
 		private int _mapSize;
 		private int _oceanMinWidth;
 		private double _difficultyModifier;
+		private GameCoefficientsCalculatorSingleton _gameCoefficientsCalculatorSingleton;
 		private Player _player;
 
 		public Game(int mapSize, double difficultyModifier, string playerName)
@@ -20,7 +21,8 @@ namespace Don_t_Starve.GameEngine
 			_mapSize = mapSize;
 			_oceanMinWidth = 15;
 			_difficultyModifier = difficultyModifier;
-			_player = new Player(playerName, _oceanMinWidth, (_mapSize - _oceanMinWidth), new GameCoefficients(_difficultyModifier));
+			_gameCoefficientsCalculatorSingleton = GameCoefficientsCalculatorSingleton.GetInstance(_difficultyModifier);
+			_player = new Player(playerName, _oceanMinWidth, (_mapSize - _oceanMinWidth), new PlayerGameCoefficients());
 		}
 	}
 }

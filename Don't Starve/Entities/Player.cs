@@ -77,8 +77,9 @@ namespace Don_t_Starve.Entities
 		public string Name { get => _name; }
 		public Dictionary<string, int> Resources { get => _resources; }
 		public FlowerWreath FlowerWreath { get => _flowerWreath;  }
-		internal List<Campfire> Campfires { get => _campfires; }
-		internal Dictionary<string, Equipment> Tools { get => _tools; }
+		public List<Campfire> Campfires { get => _campfires; }
+		public Dictionary<string, Equipment> Tools { get => _tools; }
+		public Position Position { get => _position; }
 
 		private void CheckLiveProperty (ref double property, double value, [System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
 		{
@@ -274,7 +275,7 @@ namespace Don_t_Starve.Entities
 			}
 		}
 
-		private void CheckDestinationWalkableAndUpdatePosition(Position newPosition, Field[][] map)
+		private void CheckDestinationWalkableAndUpdatePosition(Position newPosition, Field[,] map)
 		{
 			bool destinationIsReachable = false;
 
@@ -282,7 +283,7 @@ namespace Don_t_Starve.Entities
 			{
 				for (int y = newPosition.YPosition - 1; y <= newPosition.YPosition; y++)
 				{
-					if (map[x][y].isWalkable())
+					if (map[x, y].isWalkable())
 					{
 						destinationIsReachable = true;
 					}
@@ -300,7 +301,7 @@ namespace Don_t_Starve.Entities
 			}
 		}
 
-		public void Move(string direction, Field[][] map)
+		public void Move(string direction, Field[,] map)
 		{
 			switch (direction)
 			{

@@ -20,9 +20,10 @@ namespace Don_t_Starve.Equipments
 
 		public static Dictionary<string, int> RawMaterials { get => _rawMaterials; }
 
-		public static void Create(Player player)
+		public static Player Create(Player player)
 		{
 			player.CreateEquipment(_rawMaterials, 1, Constants.Pickaxe);
+			return player;
 		}
 	}
 }

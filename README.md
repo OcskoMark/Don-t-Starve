@@ -22,14 +22,15 @@ Field types (the first two character is the short id for the fields):
  - Stone: collectible resource, you can use as raw material to make equipments, you need an pickaxe to collect it
  - Tree: collectible resource, you can use as raw material to make equipments, you need an axe to collect it
  
-Equipments (the requirement and "live" values depend on difficulty):
- - Axe: you can use to collect tree, it becomes unusable after you collect 10 trees (requirements: 2 grass, 3 bough)
- - Pickaxe: you can use to collect stone, it becomes unusable after you collect 7 stones (requirements: 2 tree, 2 grass)
- - Campfire: you can use to cook water, food and you can withstand the vicissitudes of night if a campfire is near you (max. 3 distance) (requirements: 2 tree, 4 stone, 2 grass)
- - Flower wreath: your brain heals at daytime and less goes bad at night if you have it, it lasts 15 days (requirement: 10 flower)
+Equipments (the requirement and "live" values depend on difficulty, the create code in the brackets):
+ - Axe (a): you can use to collect tree, it becomes unusable after you collect 10 trees (requirements: 2 grass, 3 bough)
+ - Pickaxe (p): you can use to collect stone, it becomes unusable after you collect 7 stones (requirements: 2 tree, 2 grass)
+ - Campfire (c): you can use to cook water, food and you can withstand the vicissitudes of night if a campfire is near you (max. 3 distance) (requirements: 2 tree, 4 stone, 2 grass)
+ - Flower wreath (f): your brain heals at daytime and less goes bad at night if you have it, it lasts 15 days (requirement: 10 flower)
  
-Actions:
- - Wait: do nothing
- - Move: move the next field to left/right/up/down (if the destination field is walkable)
- - Collect resource: collect the resource from the current field
- - Create equipment: make one equipment
+Actions (the key in the brackets):
+ - Wait (w): do nothing
+ - Move (arrows): move the next field to left/right/up/down (if the destination field is walkable)
+ - Collect resource (c): collect the resource from the current field
+ - Create equipment (m): make one equipment
+ - Quit (q): quit the game

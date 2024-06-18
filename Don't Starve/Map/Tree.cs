@@ -1,4 +1,5 @@
 ﻿using Don_t_Starve.Entities;
+using Don_t_Starve.Exceptions;
 using Don_t_Starve.GameEngine;
 using System;
 using System.Collections.Generic;
@@ -15,12 +16,20 @@ namespace Don_t_Starve.Map
 
 		protected override bool IsCollectible(Player player)
 		{
-			return (Amount > 0 && player.Tools[Constants.Axe] != null && player.Tools[Constants.Axe].IsUsable()) ? true : false;
+			if (player.Tools[Constants.Axe] != null && player.Tools[Constants.Axe].IsUsable())
+			{
+				return Amount > 0 ? true : false;
+			}
+			else
+			{
+				throw new WrongActionException("You have not the necessary equipment to collect this resource! (" + Constants.Axe + ")");
+			}
 		}
 
 		protected override Player CollectResource(Player player)
 		{
 			player.CollectResource(Type, 3, Constants.Axe);
+			Amount--;
 			return player;
 		}
 	}

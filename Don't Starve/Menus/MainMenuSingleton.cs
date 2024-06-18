@@ -28,17 +28,16 @@ namespace Don_t_Starve.Menus
 
 		private void Quit()
 		{
-
 			bool validInput = false;
 
 			while (!validInput)
 			{
 				Console.WriteLine();
-				Console.WriteLine("Are you sure you quit? (y/n)");
+				Console.WriteLine("Are you sure you want to quit? (y/n)");
 
 				string input = Console.ReadLine();
 
-				switch (input)
+				switch (input.ToLower())
 				{
 					case "y":
 						validInput = true;

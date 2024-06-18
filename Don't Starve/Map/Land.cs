@@ -65,6 +65,7 @@ namespace Don_t_Starve.Map
 		protected virtual Player CollectResource(Player player)
 		{
 			player.CollectResource(Type, 1);
+			Amount--;
 			return player;
 		}
 
@@ -72,7 +73,6 @@ namespace Don_t_Starve.Map
 		{
 			if (IsCollectible(player))
 			{
-				Amount--;
 				return CollectResource(player);
 			}
 			else

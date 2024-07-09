@@ -24,5 +24,17 @@ namespace Don_t_Starve.Map
 		{
 			return Math.Sqrt(Math.Pow((_xPosition - position.XPosition), 2) + Math.Pow((_yPosition - position.YPosition), 2));
 		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj == null || !(obj is Position))
+			{
+				return false;
+			}
+			else
+			{
+				return (XPosition == ((Position)obj).XPosition && YPosition == ((Position)obj).YPosition);
+			}
+		}
 	}
 }

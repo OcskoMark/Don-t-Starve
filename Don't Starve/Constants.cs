@@ -20,9 +20,13 @@ namespace Don_t_Starve
 		public const string Herb = "herb";
 		public const string Carrot = "carrot";
 		public const string Berry = "berry";
-		public static readonly List<string> collectibles = new List<string>
+		public static readonly List<string> Collectibles = new List<string>
 		{
 			Water, Bough, Tree, Stone, Grass, Flower, Herb, Carrot, Berry
+		};
+		public static readonly List<String> Bakeble = new List<string>
+		{
+			Water, Herb, Carrot, Berry
 		};
 
 		//These are the names of equipments.

@@ -184,7 +184,7 @@ namespace Don_t_Starve.GameEngine
 		private void MakeEquipment()
 		{
 			Console.WriteLine();
-			Console.WriteLine("Please, choose an equipment!");
+			Console.WriteLine("Please, select an equipment to make!");
 
 			while (true)
 			{
@@ -203,6 +203,95 @@ namespace Don_t_Starve.GameEngine
 						break;
 					case ConsoleKey.C:
 						_player = Campfire.Create(_player);
+						break;
+					default:
+						Console.WriteLine();
+						Console.WriteLine(Constants.WrongInputMessage);
+						break;
+				}
+			}
+		}
+
+		private void BakeFood()
+		{
+			Console.WriteLine();
+			Console.WriteLine("Please, select a food to bake!");
+
+			while (true)
+			{
+				var food = Console.ReadKey(true).Key;
+
+				switch (food)
+				{
+					case ConsoleKey.W:
+						_player.BakeFood(Constants.Water);
+						break;
+					case ConsoleKey.H:
+						_player.BakeFood(Constants.Herb);
+						break;
+					case ConsoleKey.C:
+						_player.BakeFood(Constants.Carrot);
+						break;
+					case ConsoleKey.B:
+						_player.BakeFood(Constants.Berry);
+						break;
+					default:
+						Console.WriteLine();
+						Console.WriteLine(Constants.WrongInputMessage);
+						break;
+				}
+			}
+		}
+
+		private void EatFood()
+		{
+			Console.WriteLine();
+			Console.WriteLine("Please, choose between the baked or unbaked food! (y/n)");
+
+			bool isBaked = false;
+			bool isValidInput = false;
+
+			while (!isValidInput)
+			{
+				var choose = Console.ReadKey(true).Key;
+
+				switch (choose)
+				{
+					case ConsoleKey.Y:
+						isBaked = true;
+						isValidInput = true;
+						break;
+					case ConsoleKey.N:
+						isBaked = false;
+						isValidInput = true;
+						break;
+					default:
+						Console.WriteLine();
+						Console.WriteLine(Constants.WrongInputMessage);
+						break;
+				}
+			}
+
+			Console.WriteLine();
+			Console.WriteLine("Please, select a food to eat!");
+
+			while (true)
+			{
+				var food = Console.ReadKey(true).Key;
+
+				switch (food)
+				{
+					case ConsoleKey.W:
+						_player.Eat(Constants.Water, isBaked);
+						break;
+					case ConsoleKey.H:
+						_player.Eat(Constants.Herb, isBaked);
+						break;
+					case ConsoleKey.C:
+						_player.Eat(Constants.Carrot, isBaked);
+						break;
+					case ConsoleKey.B:
+						_player.Eat(Constants.Berry, isBaked);
 						break;
 					default:
 						Console.WriteLine();
@@ -243,11 +332,17 @@ namespace Don_t_Starve.GameEngine
 						case ConsoleKey.C:
 							_player = _map[_player.Position.YPosition, _player.Position.XPosition].Collect(_player);
 							break;
+						case ConsoleKey.B:
+							BakeFood();
+							break;
 						case ConsoleKey.W:
 							_player.Wait();
 							break;
 						case ConsoleKey.M:
 							MakeEquipment();
+							break;
+						case ConsoleKey.E:
+							EatFood();
 							break;
 						case ConsoleKey.Q:
 							playerWantToQuit = ConfirmQuit();

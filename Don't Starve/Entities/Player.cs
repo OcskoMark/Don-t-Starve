@@ -25,7 +25,7 @@ namespace Don_t_Starve.Entities
 		private FlowerWreath _flowerWreath;
 		private List<Campfire> _campfires;
 		private Position _position;
-		private PlayerGameCoefficients _playerGameCoefficients;
+		private PlayerGameCoefficients _gameCoeffs;
 
 		public Player(string name, int minCoord, int maxCoord, PlayerGameCoefficients playerGameCoefficients)
 		{
@@ -37,9 +37,13 @@ namespace Don_t_Starve.Entities
 			_hunger = 100.0;
 			_thirst = 100.0;
 			_maxInventory = GameCoefficientsCalculatorSingleton.DividedByDifficultyModifier(40);
-			foreach (string collectible in Constants.collectibles)
+			foreach (string collectible in Constants.Collectibles)
 			{
 				_resources[collectible] = 0;
+			}
+			foreach (string cookable in Constants.Bakeble)
+			{
+				_resources["baked_" + cookable] = 0;
 			}
 			_actionPoints = 75;
 			_daytime = true;
@@ -49,7 +53,7 @@ namespace Don_t_Starve.Entities
 			_campfires = new List<Campfire>();
 			_position = new Position(random.Next(minCoord, maxCoord), random.Next(minCoord, maxCoord));
 
-			_playerGameCoefficients = playerGameCoefficients;
+			_gameCoeffs = playerGameCoefficients;
 			
 		}
 
@@ -160,7 +164,7 @@ namespace Don_t_Starve.Entities
 			{
 				foreach (Campfire campfire in _campfires)
 				{
-					if (_playerGameCoefficients.MaxSafetyDistanceFromCampfire >= _position.GetDistance(campfire.Position))
+					if (_gameCoeffs.MaxSafetyDistanceFromCampfire >= _position.GetDistance(campfire.Position))
 					{
 						return true;
 					}
@@ -175,26 +179,26 @@ namespace Don_t_Starve.Entities
 			if (_actionPoints >= spentActionPoints)
 			{
 				ActionPoints -= spentActionPoints;
-				Hunger -= _playerGameCoefficients.HungerLossByAction * spentActionPoints;
+				Hunger -= _gameCoeffs.HungerLossByAction * spentActionPoints;
 				if (!_daytime)
 				{
-					Thirst -= _playerGameCoefficients.ThirstLossByActionAtNight;
+					Thirst -= _gameCoeffs.ThirstLossByActionAtNight;
 					if (IsExistNearlyCampfire())
 					{
 						Brain -= (_flowerWreath != null) ?
-							((_playerGameCoefficients.BrainLossNight - _playerGameCoefficients.BrainGainWithFlowerWreath) * spentActionPoints) :
-							(_playerGameCoefficients.BrainLossNight * spentActionPoints);
+							((_gameCoeffs.BrainLossNight - _gameCoeffs.BrainGainWithFlowerWreath) * spentActionPoints) :
+							(_gameCoeffs.BrainLossNight * spentActionPoints);
 					}
 					else
 					{
-						Brain -= _playerGameCoefficients.BrainLossNightWithoutCampfire;
-						Hp -= _playerGameCoefficients.HpLossAtNightWithoutCampfire;
+						Brain -= _gameCoeffs.BrainLossNightWithoutCampfire;
+						Hp -= _gameCoeffs.HpLossAtNightWithoutCampfire;
 					}
 					
 				}
 				else
 				{
-					Thirst -= _playerGameCoefficients.ThirstLossByActionAtDaytime;
+					Thirst -= _gameCoeffs.ThirstLossByActionAtDaytime;
 				}
 			}
 			else
@@ -275,6 +279,40 @@ namespace Don_t_Starve.Entities
 			}
 		}
 
+		public void BakeFood(string food)
+		{
+			bool isBakeble = false;
+
+			foreach (Campfire campfire in _campfires)
+			{
+				if (campfire.Position.Equals(_position))
+				{
+					isBakeble = true;
+					break;
+				}
+			}
+
+			if (isBakeble && _resources[food] > 0 && _resources["baked_" + food] < _maxInventory)
+			{
+				SpendActionPoints(1);
+				_resources[food]--;
+				_resources["baked_" + food]++;
+			}
+			else if (!isBakeble)
+			{
+				throw new WrongActionException("Wrong action! Please, go to a campfire to can bake a(n) " + food + "!");
+			}
+			else if (!(_resources[food] > 0))
+			{
+				throw new WrongActionException("Wrong action! You have not any" + food + "!");
+			}
+			else
+			{
+				throw new WrongActionException("Wrong action! You have not carry more baked (or cooked) " + food + "!");
+			}
+
+		}
+
 		private void CheckDestinationWalkableAndUpdatePosition(Position newPosition, Field[,] map)
 		{
 			bool destinationIsReachable = false;
@@ -318,7 +356,78 @@ namespace Don_t_Starve.Entities
 					CheckDestinationWalkableAndUpdatePosition(new Position(_position.XPosition, _position.YPosition + 1), map);
 					break;
 				default:
-					throw new Exception("Unknown direction!");
+					throw new WrongActionException("Unknown direction!");
+			}
+		}
+
+		private bool CheckPlayerHasChoosedFood(string food)
+		{
+			if (_resources[food] > 0)
+			{
+				return true;
+			}
+			else
+			{
+				throw new WrongActionException("Wrong action! You have not any " + food.Replace('_', ' ') + "!");
+			}
+		}
+
+		private void GetEatingEffects(double thirst, double hunger, double hp, double brain, string food)
+		{
+			_resources[food]--;
+			Thirst += thirst;
+			Hunger += hunger;
+			Hp += hp;
+			Brain += brain;
+		}
+
+		public void Eat(string food, bool isBaked)
+		{
+			if (isBaked)
+			{
+				if (CheckPlayerHasChoosedFood("baked_" + food))
+				{
+					switch (food)
+					{
+						case Constants.Water:
+							GetEatingEffects(_gameCoeffs.GainThirstDrinkingBoiledWater, _gameCoeffs.GainHungerDrinkingBoiledWater, _gameCoeffs.GainHpDrinkingBoiledWater, _gameCoeffs.GainBrainDrinkingBoiledWater, "baked_" + food);
+							break;
+						case Constants.Herb:
+							GetEatingEffects(_gameCoeffs.GainThirstEatingBakedHerb, _gameCoeffs.GainHungerEatingBakedHerb, _gameCoeffs.GainHpEatingBakedHerb, _gameCoeffs.GainBrainEatingBakedHerb, "baked_" + food);
+							break;
+						case Constants.Carrot:
+							GetEatingEffects(_gameCoeffs.GainThirstEatingBakedCarrot, _gameCoeffs.GainHungerEatingBakedCarrot, _gameCoeffs.GainHpEatingBakedCarrot, _gameCoeffs.GainBrainEatingBakedCarrot, "baked_" + food);
+							break;
+						case Constants.Berry:
+							GetEatingEffects(_gameCoeffs.GainThirstEatingBakedBerry, _gameCoeffs.GainHungerEatingBakedBerry, _gameCoeffs.GainHpEatingBakedBerry, _gameCoeffs.GainBrainEatingBakedBerry, "baked_" + food);
+							break;
+						default:
+							throw new WrongActionException("Unknown food!");
+					}
+				}
+			}
+			else
+			{
+				if (CheckPlayerHasChoosedFood(food))
+				{
+					switch (food)
+					{
+						case Constants.Water:
+							GetEatingEffects(_gameCoeffs.GainThirstDrinkingUnboiledWater, _gameCoeffs.GainHungerDrinkingUnboiledWater, _gameCoeffs.GainHpDrinkingUnboiledWater, _gameCoeffs.GainBrainDrinkingUnboiledWater, food);
+							break;
+						case Constants.Herb:
+							GetEatingEffects(_gameCoeffs.GainThirstEatingUnbakedHerb, _gameCoeffs.GainHungerEatingUnbakedHerb, _gameCoeffs.GainHpEatingUnbakedHerb, _gameCoeffs.GainBrainEatingUnbakedHerb, food);
+							break;
+						case Constants.Carrot:
+							GetEatingEffects(_gameCoeffs.GainThirstEatingUnbakedCarrot, _gameCoeffs.GainHungerEatingUnbakedCarrot, _gameCoeffs.GainHpEatingUnbakedCarrot, _gameCoeffs.GainBrainEatingUnbakedCarrot, food);
+							break;
+						case Constants.Berry:
+							GetEatingEffects(_gameCoeffs.GainThirstEatingUnbakedBerry, _gameCoeffs.GainHungerEatingUnbakedBerry, _gameCoeffs.GainHpEatingUnbakedBerry, _gameCoeffs.GainBrainEatingUnbakedBerry, food);
+							break;
+						default:
+							throw new WrongActionException("Unknown food!");
+					}
+				}
 			}
 		}
 	}
